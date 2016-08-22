@@ -2,6 +2,9 @@ package highwin.zgs.drawerlayout;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -9,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.nineoldandroids.view.ViewHelper;
 
 /**
  * User: zgsHighwin
@@ -90,6 +95,7 @@ public class DrawerLayout extends FrameLayout {
 
         /**
          * child  Decide whether the current view can be dragged
+         *
          * @param child     current capture view
          * @param pointerId Distinguish multi-touch id
          * @return true can drag,false otherwise
@@ -149,14 +155,16 @@ public class DrawerLayout extends FrameLayout {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
+            int mMainViewLeft = mMainView.getLeft();
+            int newLeft = mMainViewLeft + dx;
+            newLeft = fixLeft(newLeft);
 
             if (changedView == mLeftView) {
                 mLeftView.layout(0, 0, mWidth, mHeight);
-                int mMainViewLeft = mMainView.getLeft();
-                int newLeft = mMainViewLeft + dx;
-                newLeft = fixLeft(newLeft);
                 mMainView.layout(newLeft, 0, newLeft + mWidth, mHeight);
             }
+
+            dragEventAnimation(newLeft);
 
             // Compatible low version
             // ViewDragHelper using offsetLeftAndRight (int offset) to drag,In high version,which contains refresh method,
@@ -164,10 +172,118 @@ public class DrawerLayout extends FrameLayout {
             invalidate();
         }
 
+        /**
+         * the view was released
+         *
+         * @param releasedChild
+         * @param xvel          horizontal speed + right,- left
+         * @param yvel          vertical speed + down,-up
+         */
         @Override
-        public void onViewDragStateChanged(int state) {
-            super.onViewDragStateChanged(state);
+        public void onViewReleased(View releasedChild, float xvel, float yvel) {
+            super.onViewReleased(releasedChild, xvel, yvel);
+            if (xvel == 0 && mMainView.getLeft() > mRange / 2.0f) {
+                open();
+            } else if (xvel > 0) {
+                open();
+            } else {
+                close();
+            }
         }
+    }
+
+    private void dragEventAnimation(int newLeft) {
+        float percent = (float) (newLeft * 1.0f / mRange);
+        ViewHelper.setScaleX(mLeftView, evaluate(percent, 0.5, 1.0f));
+        ViewHelper.setScaleY(mLeftView, 0.5f + percent * 0.5f);
+
+        ViewHelper.setTranslationX(mLeftView, evaluate(percent, -mWidth / 2, 0));
+
+        ViewHelper.setAlpha(mLeftView,evaluate(percent,0.5f,1f));
+
+        ViewHelper.setScaleX(mMainView,evaluate(percent,1.0f,0.8f));
+        ViewHelper.setScaleY(mMainView,evaluate(percent,1.0f,0.8f));
+
+        //set background color
+        getBackground().setColorFilter((int)evaluateColor(percent, Color.BLACK,Color.TRANSPARENT), PorterDuff.Mode.SRC_OVER);
+    }
+
+    private Float evaluate(float fraction, Number startValue, Number endValue) {
+        float startFloat = startValue.floatValue();
+        return startFloat + fraction * (endValue.floatValue() - startFloat);
+    }
+
+    private Object evaluateColor(float fraction, Object startValue, Object endValue) {
+        int startInt = (Integer) startValue;
+        int startA = (startInt >> 24) & 0xff;
+        int startR = (startInt >> 16) & 0xff;
+        int startG = (startInt >> 8) & 0xff;
+        int startB = startInt & 0xff;
+
+        int endInt = (Integer) endValue;
+        int endA = (endInt >> 24) & 0xff;
+        int endR = (endInt >> 16) & 0xff;
+        int endG = (endInt >> 8) & 0xff;
+        int endB = endInt & 0xff;
+
+        return (int)((startA + (int)(fraction * (endA - startA))) << 24) |
+                (int)((startR + (int)(fraction * (endR - startR))) << 16) |
+                (int)((startG + (int)(fraction * (endG - startG))) << 8) |
+                (int)((startB + (int)(fraction * (endB - startB))));
+    }
+
+
+    public void close() {
+        close(true);
+    }
+
+    /**
+     * close leftView
+     *
+     * @param isSmooth true make view move smoothly,false otherwise
+     */
+    private void close(boolean isSmooth) {
+        if (isSmooth) {
+            boolean smoothSlideViewTo = mHelper.smoothSlideViewTo(mMainView, 0, 0);//true has not yet finished,false otherwhise
+            if (smoothSlideViewTo) {
+                //need to refreshe UI
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        } else {
+            mMainView.layout(0, 0, mWidth, mHeight);
+        }
+    }
+
+    public void open() {
+        open(true);
+    }
+
+    /**
+     * open leftView
+     *
+     * @param isSmooth true make view move smoothly,false otherwise
+     */
+    public void open(boolean isSmooth) {
+        if (isSmooth) {
+            boolean smoothSlideViewTo = mHelper.smoothSlideViewTo(mMainView, (int) mRange, 0);//true has not yet finished,false otherwhise
+            if (smoothSlideViewTo) {
+                //need to refresh UI
+                ViewCompat.postInvalidateOnAnimation(this);//must be a ViewGroup
+            }
+        } else {
+            mMainView.layout((int) mRange, 0, (int) (mRange + mWidth), mHeight);
+
+        }
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if (mHelper.continueSettling(true)) {
+            //return true mean we need refresh ui
+            ViewCompat.postInvalidateOnAnimation(this);
+        }
+
     }
 
     /**

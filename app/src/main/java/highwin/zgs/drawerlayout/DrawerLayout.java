@@ -335,6 +335,7 @@ public class DrawerLayout extends FrameLayout {
 
         //set background color gradiant
         getBackground().setColorFilter((int) evaluateColor(percent, Color.BLACK, Color.TRANSPARENT), PorterDuff.Mode.SRC_OVER);
+
     }
 
     /**

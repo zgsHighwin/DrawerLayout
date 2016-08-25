@@ -251,7 +251,7 @@ public class DrawerLayout extends FrameLayout {
          * the view was released
          * 当view释放的时候调用
          * @param releasedChild
-         * @param xvel          horizontal speed + right,- left
+         * @param xvel  xvel ==0的时候说明是静止的状态horizontal speed + right,- left
          * @param yvel          vertical speed + down,-up
          */
         @Override

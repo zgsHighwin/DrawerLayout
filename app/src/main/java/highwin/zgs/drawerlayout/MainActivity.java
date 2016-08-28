@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageView mIv = (ImageView) findViewById(getResources().getIdentifier("iv", "id", getPackageName()));
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(getResources().getIdentifier("drawer_layout", "id", getPackageName()));
         InterceptRelativeLayout interceptRelativeLayout = (InterceptRelativeLayout) findViewById(getResources().getIdentifier("main_layout", "id", getPackageName()));
-       //设置监听|set listener
+        //设置监听|set listener
         drawerLayout.setOnDraggedStatusListener(new DrawerLayout.OnDraggedStatusListener() {
             @Override
             public void drawerClose() {
@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 //    ToastUtils.showToast(getApplicationContext(), "drawerDragging");
             }
         });
-
         //设置是否拦截|set view intercept
         interceptRelativeLayout.setDrawerLayout(drawerLayout, true);
     }

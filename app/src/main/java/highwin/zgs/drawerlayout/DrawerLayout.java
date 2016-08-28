@@ -91,6 +91,7 @@ public class DrawerLayout extends FrameLayout {
     /**
      * set DrawerLayout dragger status listener
      * 设置监听事件
+     *
      * @param onDraggedStatusListener
      */
     public void setOnDraggedStatusListener(DrawerLayout.OnDraggedStatusListener onDraggedStatusListener) {
@@ -135,6 +136,7 @@ public class DrawerLayout extends FrameLayout {
     /**
      * This is called during layout when the size of this view has changed
      * 当布局发生改变的时候调用，主要用于获取view的宽高
+     *
      * @param w
      * @param h
      * @param oldw
@@ -163,6 +165,7 @@ public class DrawerLayout extends FrameLayout {
         /**
          * child  Decide whether the current view can be dragged
          * 接触到view的时候调用的方法
+         *
          * @param child     接触到的具体的view|current capture view
          * @param pointerId 多点触控的id|Distinguish multi-touch id
          * @return 返回值true表示能拖动，false不能拖动｜true can drag,false otherwise
@@ -188,6 +191,7 @@ public class DrawerLayout extends FrameLayout {
         /**
          * view start move,not real to move，
          * 这个方法可以设置view手动的范围
+         *
          * @param child
          * @param left
          * @param dx
@@ -209,6 +213,7 @@ public class DrawerLayout extends FrameLayout {
         /**
          * not real move range
          * 实际上不是范围，只是
+         *
          * @param child
          * @return
          */
@@ -221,6 +226,7 @@ public class DrawerLayout extends FrameLayout {
         /**
          * when changing the position of the view,(Update, animation, repainted)
          * 当view的位置改变的时候调用，可以进行一些更新，动画，重绘的一些工作
+         *
          * @param changedView
          * @param left
          * @param top
@@ -250,8 +256,9 @@ public class DrawerLayout extends FrameLayout {
         /**
          * the view was released
          * 当view释放的时候调用
+         *
          * @param releasedChild
-         * @param xvel  xvel ==0的时候说明是静止的状态horizontal speed + right,- left
+         * @param xvel          xvel ==0的时候说明是静止的状态horizontal speed + right,- left
          * @param yvel          vertical speed + down,-up
          */
         @Override
@@ -267,10 +274,10 @@ public class DrawerLayout extends FrameLayout {
         }
     }
 
-
     /**
      * some animation while dragger view
      * view的一些动画，包括绽放，平衡，alpha
+     *
      * @param newLeft
      */
     private void dragEventAnimation(int newLeft) {
@@ -293,12 +300,17 @@ public class DrawerLayout extends FrameLayout {
                 }
             }
         }
-        ViewAnimations(percent);
-    }
 
+        ViewAnimations(percent, startLeftValue, endLeftValue,startMainValue,endMainValue);
+    }
+    float startLeftValue = 0.8f;
+    float endLeftValue = 1.0f;
+    float startMainValue = 1.0f;
+    float endMainValue = 0.8f;
     /**
      * get current drawerlayout status
      * 获取当前drawerlayout的状态
+     *
      * @param newLeft
      * @return
      */
@@ -316,12 +328,13 @@ public class DrawerLayout extends FrameLayout {
     /**
      * view animation ,user ViewHelper in order to  Compatible low version
      * 使用ViewHelper主要是为了兼容低的版本（3.0以下）
+     *
      * @param percent Percentage from mMainView.getLeft to target position
      */
-    private void ViewAnimations(float percent) {
+    private void ViewAnimations(float percent, float startLeftValue, float endLeftValue, float startMainValue, float endMainValue) {
         //set mLeftView scale
-        ViewHelper.setScaleX(mLeftView, evaluate(percent, 0.8, 1.0f));
-        ViewHelper.setScaleY(mLeftView, evaluate(percent, 0.8, 1.0f));
+        ViewHelper.setScaleX(mLeftView, evaluate(percent, startLeftValue, endLeftValue));
+        ViewHelper.setScaleY(mLeftView, evaluate(percent, startLeftValue, endLeftValue));
 
         //set mLeftView translation
         ViewHelper.setTranslationX(mLeftView, evaluate(percent, -mWidth / 2, 0));
@@ -330,8 +343,8 @@ public class DrawerLayout extends FrameLayout {
         ViewHelper.setAlpha(mLeftView, evaluate(percent, 0.5f, 1f));
 
         //set mMainView scale
-        ViewHelper.setScaleX(mMainView, evaluate(percent, 1.0f, 0.8f));
-        ViewHelper.setScaleY(mMainView, evaluate(percent, 1.0f, 0.8f));
+        ViewHelper.setScaleX(mMainView, evaluate(percent, startMainValue, endMainValue));
+        ViewHelper.setScaleY(mMainView, evaluate(percent, startMainValue, endMainValue));
 
         //set background color gradiant
         getBackground().setColorFilter((int) evaluateColor(percent, Color.BLACK, Color.TRANSPARENT), PorterDuff.Mode.SRC_OVER);
@@ -341,6 +354,7 @@ public class DrawerLayout extends FrameLayout {
     /**
      * set value gradiant from start to end by fraction
      * 设置数值渐变
+     *
      * @param fraction
      * @param startValue
      * @param endValue
@@ -354,6 +368,7 @@ public class DrawerLayout extends FrameLayout {
     /**
      * set color gradient
      * 设置颜色渐变
+     *
      * @param fraction
      * @param startValue
      * @param endValue
@@ -389,7 +404,8 @@ public class DrawerLayout extends FrameLayout {
 
     /**
      * close leftView
-     *  关闭左边的view
+     * 关闭左边的view
+     *
      * @param isSmooth ture表示平没移动｜true make view move smoothly,false otherwise
      */
     private void close(boolean isSmooth) {
@@ -414,6 +430,7 @@ public class DrawerLayout extends FrameLayout {
     /**
      * open leftView
      * 打开左边的视图
+     *
      * @param isSmooth true make view move smoothly,false otherwise
      */
     public void open(boolean isSmooth) {
@@ -444,6 +461,7 @@ public class DrawerLayout extends FrameLayout {
     /**
      * Limit the movement range of views
      * 修改移动的位置，不让view超出边界
+     *
      * @param left
      * @return
      */

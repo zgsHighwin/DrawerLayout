@@ -3,7 +3,9 @@ package highwin.zgs.drawerlayout;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import com.nineoldandroids.view.ViewHelper;
 
@@ -59,8 +61,14 @@ public class MainActivity extends AppCompatActivity {
                     drawerLayout.setMode(DrawerLayout.DrawerLayoutStatus.MODE_TRANSLATE);
                     mLastMode = 0;
                 }
-
             }
         });
+
+        ViewGroup leftView = drawerLayout.getLeftView();
+        if (leftView != null) {
+            if (leftView instanceof ScrollView) {
+                leftView.setOverScrollMode(ScrollView.OVER_SCROLL_NEVER);
+            }
+        }
     }
 }

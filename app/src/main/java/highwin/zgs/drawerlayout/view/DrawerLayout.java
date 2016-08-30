@@ -42,13 +42,13 @@ public class DrawerLayout extends FrameLayout {
     private int mHeight;
     private int mRange;
 
-    private float startLeftValue = 0.8f;
-    private float endLeftValue = 1.0f;
-    private float startMainValue = 1.0f;
-    private float endMainValue = 0.8f;
+    private float mStartLeftValue = 0.8f;
+    private float mEndLeftValue = 1.0f;
+    private float mStartMainValue = 1.0f;
+    private float mEndMainValue = 0.8f;
 
-    private float startLeftAlphaValue = 0.5f;
-    private float endLeftAlphaValue = 1f;
+    private float mStartLeftAlphaValue = 0.5f;
+    private float mEndLeftAlphaValue = 1f;
 
     private int mMode = DrawerLayoutStatus.MODE_SCALE;
 
@@ -67,13 +67,13 @@ public class DrawerLayout extends FrameLayout {
         if (a != null) {
             mRange = a.getInteger(R.styleable.DrawerLayout_leftDistance, (int) (context.getResources().getDisplayMetrics().widthPixels * 0.6));
 
-            startLeftValue = a.getFloat(R.styleable.DrawerLayout_startLeftValue, 0.8f);
-            endLeftValue = a.getFloat(R.styleable.DrawerLayout_endLeftValue, 1f);
-            startMainValue = a.getFloat(R.styleable.DrawerLayout_startMainValue, 1f);
-            endMainValue = a.getFloat(R.styleable.DrawerLayout_endMainValue, 0.8f);
+            mStartLeftValue = a.getFloat(R.styleable.DrawerLayout_startLeftValue, 0.8f);
+            mEndLeftValue = a.getFloat(R.styleable.DrawerLayout_endLeftValue, 1f);
+            mStartMainValue = a.getFloat(R.styleable.DrawerLayout_startMainValue, 1f);
+            mEndMainValue = a.getFloat(R.styleable.DrawerLayout_endMainValue, 0.8f);
 
-            startLeftAlphaValue = a.getFloat(R.styleable.DrawerLayout_startLeftAlphaValue, 0.5f);
-            endLeftAlphaValue = a.getFloat(R.styleable.DrawerLayout_endLeftAlphaValue, 1f);
+            mStartLeftAlphaValue = a.getFloat(R.styleable.DrawerLayout_startLeftAlphaValue, 0.5f);
+            mEndLeftAlphaValue = a.getFloat(R.styleable.DrawerLayout_endLeftAlphaValue, 1f);
 
             mMode = a.getInteger(R.styleable.DrawerLayout_mode, DrawerLayoutStatus.MODE_SCALE);
 
@@ -137,96 +137,109 @@ public class DrawerLayout extends FrameLayout {
      *
      * @param onDraggedStatusListener
      */
-    public void setOnDraggedStatusListener(DrawerLayout.OnDraggedStatusListener onDraggedStatusListener) {
+    public DrawerLayout setOnDraggedStatusListener(DrawerLayout.OnDraggedStatusListener onDraggedStatusListener) {
         mOnDraggedStatusListener = onDraggedStatusListener;
+        return this;
     }
 
     public float getEndLeftAlphaValue() {
-        return endLeftAlphaValue;
+        return mEndLeftAlphaValue;
     }
 
-    public void setEndLeftAlphaValue(float endLeftAlphaValue) {
-        this.endLeftAlphaValue = endLeftAlphaValue;
+    public DrawerLayout setEndLeftAlphaValue(float endLeftAlphaValue) {
+        this.mEndLeftAlphaValue = endLeftAlphaValue;
+        invalidate();
+        return this;
     }
 
     public float getEndLeftValue() {
-        return endLeftValue;
+        return mEndLeftValue;
     }
 
-    public void setEndLeftValue(float endLeftValue) {
-        this.endLeftValue = endLeftValue;
+    public DrawerLayout setEndLeftValue(float endLeftValue) {
+        this.mEndLeftValue = endLeftValue;
+        invalidate();
+        return this;
     }
 
     public float getEndMainValue() {
-        return endMainValue;
+        return mEndMainValue;
     }
 
-    public void setEndMainValue(float endMainValue) {
-        this.endMainValue = endMainValue;
+    public DrawerLayout setEndMainValue(float endMainValue) {
+        this.mEndMainValue = endMainValue;
+        invalidate();
+        return this;
     }
 
-    public ViewGroup getmLeftView() {
+    public ViewGroup getLeftView() {
         return mLeftView;
     }
 
-    public void setmLeftView(ViewGroup mLeftView) {
-        this.mLeftView = mLeftView;
+    public DrawerLayout setLeftView(ViewGroup leftView) {
+        this.mLeftView = leftView;
+        invalidate();
+        return this;
     }
 
     public ViewGroup getmMainView() {
         return mMainView;
     }
 
-    public void setmMainView(ViewGroup mMainView) {
+    public DrawerLayout setMainView(ViewGroup mainView) {
         this.mMainView = mMainView;
+        invalidate();
+        return this;
     }
 
-    public int getmMode() {
+    public int getMode() {
         return mMode;
     }
 
-    public void setmMode(int mMode) {
-        this.mMode = mMode;
+    public DrawerLayout setMode(int mode) {
+        this.mMode = mode;
+        invalidate();
+        return this;
     }
 
-    public int getmRange() {
+    public int getRange() {
         return mRange;
     }
 
-    public void setmRange(int mRange) {
-        this.mRange = mRange;
-    }
-
-    public int getmStatus() {
-        return mStatus;
-    }
-
-    public void setmStatus(int mStatus) {
-        this.mStatus = mStatus;
+    public DrawerLayout setRange(int range) {
+        this.mRange = range;
+        invalidate();
+        return this;
     }
 
     public float getStartLeftAlphaValue() {
-        return startLeftAlphaValue;
+        return mStartLeftAlphaValue;
     }
 
-    public void setStartLeftAlphaValue(float startLeftAlphaValue) {
-        this.startLeftAlphaValue = startLeftAlphaValue;
+    public DrawerLayout setStartLeftAlphaValue(float startLeftAlphaValue) {
+        this.mStartLeftAlphaValue = startLeftAlphaValue;
+        invalidate();
+        return this;
     }
 
     public float getStartLeftValue() {
-        return startLeftValue;
+        return mStartLeftValue;
     }
 
-    public void setStartLeftValue(float startLeftValue) {
-        this.startLeftValue = startLeftValue;
+    public DrawerLayout setStartLeftValue(float startLeftValue) {
+        this.mStartLeftValue = startLeftValue;
+        invalidate();
+        return this;
     }
 
     public float getStartMainValue() {
-        return startMainValue;
+        return mStartMainValue;
     }
 
-    public void setStartMainValue(float startMainValue) {
-        this.startMainValue = startMainValue;
+    public DrawerLayout setStartMainValue(float startMainValue) {
+        this.mStartMainValue = startMainValue;
+        invalidate();
+        return this;
     }
 
     /**
@@ -429,7 +442,7 @@ public class DrawerLayout extends FrameLayout {
                 }
             }
         }
-        ViewAnimations(percent, startLeftValue, endLeftValue, startMainValue, endMainValue);
+        ViewAnimations(percent, mStartLeftValue, mEndLeftValue, mStartMainValue, mEndMainValue);
     }
 
 
@@ -462,7 +475,7 @@ public class DrawerLayout extends FrameLayout {
         //设置左View的水平移入｜set mLeftView translation
         ViewHelper.setTranslationX(mLeftView, ValueEvaluatorUtil.evaluate(percent, -mWidth / 2, 0));
         //设置左View的alpha｜set mLeftView alpha
-        ViewHelper.setAlpha(mLeftView, ValueEvaluatorUtil.evaluate(percent, startLeftAlphaValue, endLeftAlphaValue));
+        ViewHelper.setAlpha(mLeftView, ValueEvaluatorUtil.evaluate(percent, mStartLeftAlphaValue, mEndLeftAlphaValue));
         //设置右侧View的缩放｜set mMainView scale
         if (mMode == DrawerLayoutStatus.MODE_SCALE) {
             ViewHelper.setScaleX(mMainView, ValueEvaluatorUtil.evaluate(percent, startMainScaleXValue, endMainScalXValue));

@@ -2,6 +2,7 @@ package highwin.zgs.drawerlayout;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.nineoldandroids.view.ViewHelper;
@@ -12,6 +13,7 @@ import highwin.zgs.drawerlayout.view.InterceptRelativeLayout;
 
 public class MainActivity extends AppCompatActivity {
 
+    private int mLastMode = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         //获取到控件|get view
         final ImageView mIv = (ImageView) findViewById(getResources().getIdentifier("iv", "id", getPackageName()));
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(getResources().getIdentifier("drawer_layout", "id", getPackageName()));
+        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(getResources().getIdentifier("drawer_layout", "id", getPackageName()));
         InterceptRelativeLayout interceptRelativeLayout = (InterceptRelativeLayout) findViewById(getResources().getIdentifier("main_layout", "id", getPackageName()));
         //设置监听|set listener
         drawerLayout.setOnDraggedStatusListener(new DrawerLayout.OnDraggedStatusListener() {
@@ -42,5 +44,23 @@ public class MainActivity extends AppCompatActivity {
         });
         //设置是否拦截|set view intercept
         interceptRelativeLayout.setDrawerLayout(drawerLayout, true);
+
+        mIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mLastMode == -1) {
+                    drawerLayout.setMode(DrawerLayout.DrawerLayoutStatus.MODE_TRANSLATE);
+                    mLastMode = 0;
+                } else if (mLastMode == 0) {
+                    drawerLayout.setMode(DrawerLayout.DrawerLayoutStatus.MODE_SCALE);
+                    mLastMode = 1;
+                } else {
+                    drawerLayout.setMode(DrawerLayout.DrawerLayoutStatus.MODE_TRANSLATE);
+                    mLastMode = 0;
+                }
+
+            }
+        });
     }
 }

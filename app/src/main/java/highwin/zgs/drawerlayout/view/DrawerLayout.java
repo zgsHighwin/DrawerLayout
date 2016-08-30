@@ -519,7 +519,7 @@ public class DrawerLayout extends FrameLayout {
     }
 
     public DrawerLayout setMainView(ViewGroup mainView) {
-        this.mMainView = mMainView;
+        this.mMainView = mainView;
         invalidate();
         return this;
     }

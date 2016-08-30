@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DrawerLayout">
+        <!--距离左边的距离，默认是屏幕宽度的3/5，也可以自行设置-->
         <attr name="leftDistance" format="integer|dimension"/>
-
+        <!--以下两个是左view的缩放的值从开始到结束-->
         <attr name="startLeftValue" format="float|dimension"/>
         <attr name="endLeftValue" format="float|dimension"/>
+        <!--以下两个是主view的缩放的值从开始到结束-->
         <attr name="startMainValue" format="float|dimension"/>
         <attr name="endMainValue" format="float|dimension"/>
-
+        <!--以下两个是包含两个View的背景的的alpha值-->
         <attr name="startLeftAlphaValue" format="float|dimension"/>
         <attr name="endLeftAlphaValue" format="float|dimension"/>
+        <!--主要是设置拖动的模式，拖拽不是向右平移-->
         <attr name="mode" format="enum">
             <enum name="MODE_SCALE" value="0x000004"/>
             <enum name="MODE_TRANSLATE" value="0x000005"/>

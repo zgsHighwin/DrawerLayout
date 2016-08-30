@@ -1,4 +1,4 @@
-package highwin.zgs.drawerlayout;
+package highwin.zgs.drawerlayout.utils;
 
 import android.content.Context;
 import android.widget.Toast;

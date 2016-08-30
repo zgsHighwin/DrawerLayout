@@ -1,14 +1,16 @@
-package highwin.zgs.drawerlayout;
+package highwin.zgs.drawerlayout.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,10 @@ import com.nineoldandroids.view.ViewHelper;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import highwin.zgs.drawerlayout.R;
+import highwin.zgs.drawerlayout.utils.LogUtils;
+import highwin.zgs.drawerlayout.utils.ValueEvaluatorUtil;
+
 /**
  * User: zgsHighwin
  * Email: 799174081@qq.com Or 799174081@gmail.com
@@ -27,9 +33,6 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class DrawerLayout extends FrameLayout {
 
-    public static final int CLOSE = 0X000001;
-    public static final int OPEN = 0X000002;
-    public static final int DRAGGING = 0X000003;
 
     private ViewGroup mLeftView;
     private ViewGroup mMainView;
@@ -39,10 +42,19 @@ public class DrawerLayout extends FrameLayout {
     private int mHeight;
     private int mRange;
 
+    private float startLeftValue = 0.8f;
+    private float endLeftValue = 1.0f;
+    private float startMainValue = 1.0f;
+    private float endMainValue = 0.8f;
+
+    private float startLeftAlphaValue = 0.5f;
+    private float endLeftAlphaValue = 1f;
+
+    private int mMode = DrawerLayoutStatus.MODE_SCALE;
+
     public DrawerLayout(Context context) {
         this(context, null);
     }
-
 
     public DrawerLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -50,6 +62,23 @@ public class DrawerLayout extends FrameLayout {
 
     public DrawerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DrawerLayout, defStyleAttr, 0);
+        if (a != null) {
+            mRange = a.getInteger(R.styleable.DrawerLayout_leftDistance, (int) (context.getResources().getDisplayMetrics().widthPixels * 0.6));
+
+            startLeftValue = a.getFloat(R.styleable.DrawerLayout_startLeftValue, 0.8f);
+            endLeftValue = a.getFloat(R.styleable.DrawerLayout_endLeftValue, 1f);
+            startMainValue = a.getFloat(R.styleable.DrawerLayout_startMainValue, 1f);
+            endMainValue = a.getFloat(R.styleable.DrawerLayout_endMainValue, 0.8f);
+
+            startLeftAlphaValue = a.getFloat(R.styleable.DrawerLayout_startLeftAlphaValue, 0.5f);
+            endLeftAlphaValue = a.getFloat(R.styleable.DrawerLayout_endLeftAlphaValue, 1f);
+
+            mMode = a.getInteger(R.styleable.DrawerLayout_mode, DrawerLayoutStatus.MODE_SCALE);
+
+            a.recycle();
+        }
         init();
     }
 
@@ -61,9 +90,23 @@ public class DrawerLayout extends FrameLayout {
      * DrawerLayout Three Status
      * 设置DrawerLayout的三种状态关闭，打开，拖拽
      */
-    @IntDef({CLOSE, OPEN, DRAGGING})
+    @IntDef({DrawerLayoutStatus.CLOSE, DrawerLayoutStatus.OPEN, DrawerLayoutStatus.DRAGGING,
+            DrawerLayoutStatus.MODE_SCALE, DrawerLayoutStatus.MODE_TRANSLATE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DrawerLayoutStatus {
+        /**
+         * 状态
+         * drawerlayout status
+         */
+        int CLOSE = 0X000001;
+        int OPEN = 0X000002;
+        int DRAGGING = 0X000003;
+        /**
+         * 模式
+         * drawerlayout mode
+         */
+        int MODE_SCALE = 0x000004;
+        int MODE_TRANSLATE = 0x000005;
     }
 
     @DrawerLayout.DrawerLayoutStatus
@@ -98,23 +141,113 @@ public class DrawerLayout extends FrameLayout {
         mOnDraggedStatusListener = onDraggedStatusListener;
     }
 
+    public float getEndLeftAlphaValue() {
+        return endLeftAlphaValue;
+    }
+
+    public void setEndLeftAlphaValue(float endLeftAlphaValue) {
+        this.endLeftAlphaValue = endLeftAlphaValue;
+    }
+
+    public float getEndLeftValue() {
+        return endLeftValue;
+    }
+
+    public void setEndLeftValue(float endLeftValue) {
+        this.endLeftValue = endLeftValue;
+    }
+
+    public float getEndMainValue() {
+        return endMainValue;
+    }
+
+    public void setEndMainValue(float endMainValue) {
+        this.endMainValue = endMainValue;
+    }
+
+    public ViewGroup getmLeftView() {
+        return mLeftView;
+    }
+
+    public void setmLeftView(ViewGroup mLeftView) {
+        this.mLeftView = mLeftView;
+    }
+
+    public ViewGroup getmMainView() {
+        return mMainView;
+    }
+
+    public void setmMainView(ViewGroup mMainView) {
+        this.mMainView = mMainView;
+    }
+
+    public int getmMode() {
+        return mMode;
+    }
+
+    public void setmMode(int mMode) {
+        this.mMode = mMode;
+    }
+
+    public int getmRange() {
+        return mRange;
+    }
+
+    public void setmRange(int mRange) {
+        this.mRange = mRange;
+    }
+
+    public int getmStatus() {
+        return mStatus;
+    }
+
+    public void setmStatus(int mStatus) {
+        this.mStatus = mStatus;
+    }
+
+    public float getStartLeftAlphaValue() {
+        return startLeftAlphaValue;
+    }
+
+    public void setStartLeftAlphaValue(float startLeftAlphaValue) {
+        this.startLeftAlphaValue = startLeftAlphaValue;
+    }
+
+    public float getStartLeftValue() {
+        return startLeftValue;
+    }
+
+    public void setStartLeftValue(float startLeftValue) {
+        this.startLeftValue = startLeftValue;
+    }
+
+    public float getStartMainValue() {
+        return startMainValue;
+    }
+
+    public void setStartMainValue(float startMainValue) {
+        this.startMainValue = startMainValue;
+    }
+
     /**
      * Finalize inflating a view from XML
      * 当布局完成的时候加载时候调用，主要用于获取view的实例化操作
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         if (getChildCount() < 2) {
             throw new IllegalStateException("you must have two child view at least");
         }
-
         mLeftView = (ViewGroup) getChildAt(0);
+        // bringChildToFront(mLeftView);
         mMainView = (ViewGroup) getChildAt(1);
 
         if (!(mLeftView instanceof ViewGroup && mMainView instanceof ViewGroup)) {
             throw new IllegalArgumentException("child view must be viewgroup");
         }
+
     }
 
     @Override
@@ -131,7 +264,6 @@ public class DrawerLayout extends FrameLayout {
         }
         return true;
     }
-
 
     /**
      * This is called during layout when the size of this view has changed
@@ -150,10 +282,12 @@ public class DrawerLayout extends FrameLayout {
       /*  DisplayMetrics displayMetrics = resources.getDisplayMetrics();
         mWidth = displayMetrics.widthPixels;
         mHeight = displayMetrics.heightPixels;*/
-
         mWidth = getMeasuredWidth();
         mHeight = getMeasuredHeight();
-        mRange = (int) (mWidth * 0.6);
+        if (!(mLeftView.getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT && mMainView.getLayoutParams().width == ViewGroup.LayoutParams.MATCH_PARENT)) {
+            throw new IllegalArgumentException("子view需要使用match_parent||child view must be use match_parent instead");
+        }
+        //  mRange = (int) (mWidth * 0.6);
     }
 
     /**
@@ -187,7 +321,6 @@ public class DrawerLayout extends FrameLayout {
             super.onViewCaptured(capturedChild, activePointerId);
         }
 
-
         /**
          * view start move,not real to move，
          * 这个方法可以设置view手动的范围
@@ -199,16 +332,13 @@ public class DrawerLayout extends FrameLayout {
          */
         @Override
         public int clampViewPositionHorizontal(View child, int left, int dx) {
-
             //left = child.getLeft + dx
-
             //限制mMainView的范围｜limit the range of mMainView
             if (child == mMainView) {
                 left = fixLeft(left);
             }
             return left;
         }
-
 
         /**
          * not real move range
@@ -221,7 +351,6 @@ public class DrawerLayout extends FrameLayout {
         public int getViewHorizontalDragRange(View child) {
             return (int) mRange;
         }
-
 
         /**
          * when changing the position of the view,(Update, animation, repainted)
@@ -236,15 +365,16 @@ public class DrawerLayout extends FrameLayout {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top, int dx, int dy) {
             super.onViewPositionChanged(changedView, left, top, dx, dy);
-            int mMainViewLeft = mMainView.getLeft();
-            int newLeft = mMainViewLeft + dx;
+            //  LogUtils.d("ViewDragHelperCallBack", "\tleft\t" + left + "\ttop\t" + top + "\tdx\t" + dx + "\tdy\t" + dy);
+            int newLeft = 0;
+            int mainViewLeft = mMainView.getLeft();
+            newLeft = mainViewLeft + dx;
             newLeft = fixLeft(newLeft);
 
             if (changedView == mLeftView) {
                 mLeftView.layout(0, 0, mWidth, mHeight);
                 mMainView.layout(newLeft, 0, newLeft + mWidth, mHeight);
             }
-
             dragEventAnimation(newLeft);
 
             // Compatible low version
@@ -282,31 +412,27 @@ public class DrawerLayout extends FrameLayout {
      */
     private void dragEventAnimation(int newLeft) {
         float percent = (float) (newLeft * 1.0f / mRange);
-        Log.d("DrawerLayout", "percent:" + percent);
         if (mOnDraggedStatusListener != null) {
             mOnDraggedStatusListener.drawerDragging(percent);
         }
         int lastStatus = mStatus;
-        Log.d("DrawerLayout", "lastStatus:" + lastStatus);
+        LogUtils.d("DrawerLayout", "lastStatus:" + lastStatus);
         mStatus = getDragStatus(newLeft);
-        Log.d("DrawerLayout", "mStatus:" + mStatus);
-        Log.d("DrawerLayout", "\tnewLeft\t" + newLeft + "\tmRange\t" + mRange + "newLeft == mRange:" + (newLeft == mRange));
+        LogUtils.d("DrawerLayout", "mStatus:" + mStatus);
+        LogUtils.d("DrawerLayout", "\tnewLeft\t" + newLeft + "\tmRange\t" + mRange + "newLeft == mRange:" + (newLeft == mRange));
         if (lastStatus != mStatus) {
             if (mOnDraggedStatusListener != null) {
-                if (mStatus == DrawerLayout.CLOSE) {
+                if (mStatus == DrawerLayout.DrawerLayoutStatus.CLOSE) {
                     mOnDraggedStatusListener.drawerClose();
-                } else if (mStatus == DrawerLayout.OPEN) {
+                } else if (mStatus == DrawerLayout.DrawerLayoutStatus.OPEN) {
                     mOnDraggedStatusListener.drawerOpen();
                 }
             }
         }
-
-        ViewAnimations(percent, startLeftValue, endLeftValue,startMainValue,endMainValue);
+        ViewAnimations(percent, startLeftValue, endLeftValue, startMainValue, endMainValue);
     }
-    float startLeftValue = 0.8f;
-    float endLeftValue = 1.0f;
-    float startMainValue = 1.0f;
-    float endMainValue = 0.8f;
+
+
     /**
      * get current drawerlayout status
      * 获取当前drawerlayout的状态
@@ -314,16 +440,38 @@ public class DrawerLayout extends FrameLayout {
      * @param newLeft
      * @return
      */
+    @DrawerLayoutStatus
     private int getDragStatus(int newLeft) {
         if (newLeft == 0) {
-            return DrawerLayout.CLOSE;
+            return DrawerLayout.DrawerLayoutStatus.CLOSE;
         } else if (newLeft == mRange) {
-            return DrawerLayout.OPEN;
+            return DrawerLayout.DrawerLayoutStatus.OPEN;
         } else {
-            return DrawerLayout.DRAGGING;
+            return DrawerLayout.DrawerLayoutStatus.DRAGGING;
         }
     }
 
+    public void ViewAnimations(float percent, float startLeftScaleXValue, float endLeftScalXValue,
+                               float startLeftScaleYValue, float endLeftScaleYValue,
+                               float startMainScaleXValue, float endMainScalXValue,
+                               float startMainScaleYValue, float endMainScaleYValue) {
+
+        //设置左View的x轴和y轴的缩放｜set mLeftView scale
+        ViewHelper.setScaleX(mLeftView, ValueEvaluatorUtil.evaluate(percent, startLeftScaleXValue, endLeftScalXValue));
+        ViewHelper.setScaleY(mLeftView, ValueEvaluatorUtil.evaluate(percent, startLeftScaleYValue, endLeftScaleYValue));
+        //设置左View的水平移入｜set mLeftView translation
+        ViewHelper.setTranslationX(mLeftView, ValueEvaluatorUtil.evaluate(percent, -mWidth / 2, 0));
+        //设置左View的alpha｜set mLeftView alpha
+        ViewHelper.setAlpha(mLeftView, ValueEvaluatorUtil.evaluate(percent, startLeftAlphaValue, endLeftAlphaValue));
+        //设置右侧View的缩放｜set mMainView scale
+        if (mMode == DrawerLayoutStatus.MODE_SCALE) {
+            ViewHelper.setScaleX(mMainView, ValueEvaluatorUtil.evaluate(percent, startMainScaleXValue, endMainScalXValue));
+            ViewHelper.setScaleY(mMainView, ValueEvaluatorUtil.evaluate(percent, startMainScaleYValue, endMainScaleYValue));
+        }
+        //设置背景颜色的变化｜set background color gradiant
+        getBackground().setColorFilter((int) ValueEvaluatorUtil.evaluateColor(percent, Color.BLACK, Color.TRANSPARENT), PorterDuff.Mode.SRC_OVER);
+
+    }
 
     /**
      * view animation ,user ViewHelper in order to  Compatible low version
@@ -331,66 +479,8 @@ public class DrawerLayout extends FrameLayout {
      *
      * @param percent Percentage from mMainView.getLeft to target position
      */
-    private void ViewAnimations(float percent, float startLeftValue, float endLeftValue, float startMainValue, float endMainValue) {
-        //set mLeftView scale
-        ViewHelper.setScaleX(mLeftView, evaluate(percent, startLeftValue, endLeftValue));
-        ViewHelper.setScaleY(mLeftView, evaluate(percent, startLeftValue, endLeftValue));
-
-        //set mLeftView translation
-        ViewHelper.setTranslationX(mLeftView, evaluate(percent, -mWidth / 2, 0));
-
-        //set mLeftView alpha
-        ViewHelper.setAlpha(mLeftView, evaluate(percent, 0.5f, 1f));
-
-        //set mMainView scale
-        ViewHelper.setScaleX(mMainView, evaluate(percent, startMainValue, endMainValue));
-        ViewHelper.setScaleY(mMainView, evaluate(percent, startMainValue, endMainValue));
-
-        //set background color gradiant
-        getBackground().setColorFilter((int) evaluateColor(percent, Color.BLACK, Color.TRANSPARENT), PorterDuff.Mode.SRC_OVER);
-
-    }
-
-    /**
-     * set value gradiant from start to end by fraction
-     * 设置数值渐变
-     *
-     * @param fraction
-     * @param startValue
-     * @param endValue
-     * @return
-     */
-    private Float evaluate(float fraction, Number startValue, Number endValue) {
-        float startFloat = startValue.floatValue();
-        return startFloat + fraction * (endValue.floatValue() - startFloat);
-    }
-
-    /**
-     * set color gradient
-     * 设置颜色渐变
-     *
-     * @param fraction
-     * @param startValue
-     * @param endValue
-     * @return
-     */
-    private Object evaluateColor(float fraction, Object startValue, Object endValue) {
-        int startInt = (Integer) startValue;
-        int startA = (startInt >> 24) & 0xff;
-        int startR = (startInt >> 16) & 0xff;
-        int startG = (startInt >> 8) & 0xff;
-        int startB = startInt & 0xff;
-
-        int endInt = (Integer) endValue;
-        int endA = (endInt >> 24) & 0xff;
-        int endR = (endInt >> 16) & 0xff;
-        int endG = (endInt >> 8) & 0xff;
-        int endB = endInt & 0xff;
-
-        return (int) ((startA + (int) (fraction * (endA - startA))) << 24) |
-                (int) ((startR + (int) (fraction * (endR - startR))) << 16) |
-                (int) ((startG + (int) (fraction * (endG - startG))) << 8) |
-                (int) ((startB + (int) (fraction * (endB - startB))));
+    public void ViewAnimations(float percent, float startLeftValue, float endLeftValue, float startMainValue, float endMainValue) {
+        ViewAnimations(percent, startLeftValue, endLeftValue, startLeftValue, endLeftValue, startMainValue, endMainValue, startMainValue, endMainValue);
     }
 
 
@@ -421,7 +511,7 @@ public class DrawerLayout extends FrameLayout {
     }
 
     /**
-     * set smooth move default if this method called
+     * 设置DrawerLayout的平滑移动默认是平滑移动｜set smooth move default if this method called
      */
     public void open() {
         open(true);
@@ -439,7 +529,6 @@ public class DrawerLayout extends FrameLayout {
             if (smoothSlideViewTo) {
                 //need to refresh UI
                 ViewCompat.postInvalidateOnAnimation(this);//must be a ViewGroup
-
             }
         } else {
             mMainView.layout((int) mRange, 0, (int) (mRange + mWidth), mHeight);
@@ -455,7 +544,6 @@ public class DrawerLayout extends FrameLayout {
             //return true mean we need refresh ui
             ViewCompat.postInvalidateOnAnimation(this);
         }
-
     }
 
     /**

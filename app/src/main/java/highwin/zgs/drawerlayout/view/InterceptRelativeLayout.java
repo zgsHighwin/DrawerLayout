@@ -1,4 +1,4 @@
-package highwin.zgs.drawerlayout;
+package highwin.zgs.drawerlayout.view;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
@@ -42,7 +42,7 @@ public class InterceptRelativeLayout extends RelativeLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int status = mDrawerLayout.getStatus();
         if (isIntercept) {
-            if (status == DrawerLayout.CLOSE) {
+            if (status == DrawerLayout.DrawerLayoutStatus.CLOSE) {
                 return super.onInterceptTouchEvent(ev);
             } else {
                 return true;
@@ -55,7 +55,7 @@ public class InterceptRelativeLayout extends RelativeLayout {
     public boolean onTouchEvent(MotionEvent event) {
         int status = mDrawerLayout.getStatus();
         if (isIntercept) {
-            if (status == DrawerLayout.CLOSE) {
+            if (status == DrawerLayout.DrawerLayoutStatus.CLOSE) {
                 return super.onTouchEvent(event);
             } else {
                 //Compatible low version

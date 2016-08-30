@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawerLayout">
+        <attr name="leftDistance" format="integer|dimension"/>
+
+        <attr name="startLeftValue" format="float|dimension"/>
+        <attr name="endLeftValue" format="float|dimension"/>
+        <attr name="startMainValue" format="float|dimension"/>
+        <attr name="endMainValue" format="float|dimension"/>
+
+        <attr name="startLeftAlphaValue" format="float|dimension"/>
+        <attr name="endLeftAlphaValue" format="float|dimension"/>
+        <attr name="mode" format="enum">
+            <enum name="MODE_SCALE" value="0x000004"/>
+            <enum name="MODE_TRANSLATE" value="0x000005"/>
+        </attr>
+    </declare-styleable>
+</resources>

@@ -9,9 +9,10 @@ import android.widget.ScrollView;
 
 import com.nineoldandroids.view.ViewHelper;
 
-import highwin.zgs.drawerlayout.utils.ToastUtils;
-import highwin.zgs.drawerlayout.view.DrawerLayout;
-import highwin.zgs.drawerlayout.view.InterceptRelativeLayout;
+import highwin.zgs.library.utils.ToastUtils;
+import highwin.zgs.library.view.DrawerLayout;
+import highwin.zgs.library.view.InterceptRelativeLayout;
+
 
 public class MainActivity extends AppCompatActivity {
 

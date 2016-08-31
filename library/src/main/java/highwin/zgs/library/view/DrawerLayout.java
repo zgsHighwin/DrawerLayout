@@ -1,4 +1,4 @@
-package highwin.zgs.drawerlayout.view;
+package highwin.zgs.library.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -21,9 +21,9 @@ import com.nineoldandroids.view.ViewHelper;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import highwin.zgs.drawerlayout.R;
-import highwin.zgs.drawerlayout.utils.LogUtils;
-import highwin.zgs.drawerlayout.utils.ValueEvaluatorUtil;
+import highwin.zgs.library.R;
+import highwin.zgs.library.utils.LogUtils;
+import highwin.zgs.library.utils.ValueEvaluatorUtil;
 
 /**
  * User: zgsHighwin
@@ -382,7 +382,6 @@ public class DrawerLayout extends FrameLayout {
         }
         //设置背景颜色的变化｜set background color gradiant
         getBackground().setColorFilter((int) ValueEvaluatorUtil.evaluateColor(percent, Color.BLACK, Color.TRANSPARENT), PorterDuff.Mode.SRC_OVER);
-
     }
 
     /**
@@ -446,7 +445,6 @@ public class DrawerLayout extends FrameLayout {
             mMainView.layout((int) mRange, 0, (int) (mRange + mWidth), mHeight);
         }
     }
-
 
     @Override
     public void computeScroll() {

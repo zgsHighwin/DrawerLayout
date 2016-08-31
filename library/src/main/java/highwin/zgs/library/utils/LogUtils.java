@@ -1,4 +1,4 @@
-package highwin.zgs.drawerlayout.utils;
+package highwin.zgs.library.utils;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,7 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import highwin.zgs.drawerlayout.BuildConfig;
+import highwin.zgs.library.BuildConfig;
+
 
 /**
  * User: zgsHighwin

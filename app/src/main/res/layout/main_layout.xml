@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<highwin.zgs.drawerlayout.view.InterceptRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#f00"
-    android:orientation="horizontal">
+<highwin.zgs.library.view.InterceptRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                  android:id="@+id/main_layout"
+                                                  android:layout_width="match_parent"
+                                                  android:layout_height="match_parent"
+                                                  android:background="#f00"
+                                                  android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/iv"
@@ -157,4 +157,4 @@
                 android:textSize="60sp" />
         </LinearLayout>
     </ScrollView>
-</highwin.zgs.drawerlayout.view.InterceptRelativeLayout>
+</highwin.zgs.library.view.InterceptRelativeLayout>

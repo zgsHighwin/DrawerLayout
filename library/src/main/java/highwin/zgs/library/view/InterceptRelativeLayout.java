@@ -1,4 +1,4 @@
-package highwin.zgs.drawerlayout.view;
+package highwin.zgs.library.view;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;

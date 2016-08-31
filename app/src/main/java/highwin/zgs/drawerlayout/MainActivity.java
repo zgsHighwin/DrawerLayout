@@ -2,7 +2,6 @@ package highwin.zgs.drawerlayout;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -48,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         //设置是否拦截|set view intercept
         interceptRelativeLayout.setDrawerLayout(drawerLayout, true);
 
+
+/*
         mIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     mLastMode = 0;
                 }
             }
-        });
+        });*/
 
         ViewGroup leftView = drawerLayout.getLeftView();
         if (leftView != null) {
